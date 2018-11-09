@@ -21,7 +21,7 @@ For the first time you are running the game, run `setup.bat`  by double clicking
 
 You need Python 3 installed on your machine beforehand. To install: https://www.python.org/
 
-
+<img src="screenshot.png">
 
 
 
