@@ -107,6 +107,9 @@ while True:
             hs["score"] = score
             hs_file_w.write(json.dumps(hs, separators=(',',':')))
             hs_file_w.close()
+        elif hs["score"] == score:
+            print("lol just one more point and you would have the highscore.")
+            print("The highscore of " + str(hs["score"]) + " belongs to " + hs["name"])
         else:
             print("The highscore of " + str(hs["score"]) + " belongs to " + hs["name"])
         break #Better than sys.exit() or using global variable
