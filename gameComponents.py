@@ -16,7 +16,7 @@ class Board: #Creates an empty map of pixels; like a canvas
             raise IndexError("Out of bounds!")
         elif x > self.width - 1 or y > self.height - 1:
             raise IndexError("Out of bounds!")
-        
+
         self.board[y][x] = char
     def toString(self, score=0):
         "Turns board array into string"
@@ -103,7 +103,8 @@ class Snake: #Container for conponents, with snakelike methods
         state = keystate["STATE"]
         
         if (d == "UP" and state == "DOWN") or (d == "DOWN" and state == "UP") or (d == "LEFT" and state == "RIGHT") or (d == "RIGHT" and state == "LEFT"):
-            "The snake can only turn, not reverse"
+            #The snake can only turn, not reverse
+            pass
         else:
             self.direction = state #Sync the snake's direcion with the keystate
 
