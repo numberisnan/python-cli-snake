@@ -11,12 +11,16 @@ except:
 import time, threading, random, json
 from gameComponents import *
 
+#User configs
+extremeMode = bool(input("Enter 'yes' to play extreme mode, else enter nothing "))
+gameMode = "extreme" if extremeMode else "normal"
+
 #Settings
 config = {
     "fps": 4,
     "board": {
-        "width": 20,
-        "height": 20
+        "width": 5 if extremeMode else 20,
+        "height": 5 if extremeMode else 20
     }
 }
 
@@ -63,7 +67,7 @@ keyloggerThread.daemon = True #Make it a daemon thread
 keyloggerThread.start() #Start the keylogger thread
 
 #Initialise global components
-snake = Snake(keystate["STATE"],3)
+snake = Snake(keystate["STATE"],3,round(config["board"]["width"]/2), round(config["board"]["height"]/2))
 apple = Apple(0,0,0,0).newApple(Board(config["board"]["width"],config["board"]["height"]), snake)
 score = 0
 
@@ -95,21 +99,20 @@ while True:
         hs = json.loads(hs_file_r.read())
         hs_file_r.close()
 
-        if (hs["score"] < score):
+        if (hs[gameMode]["score"] < score):
             hs_file_w = open("hs.json", "w")
             print("You made a highscore!")
             terminateKeylogger = True #Kill the keylogger so you can type your name
             input("Press enter to continue") #Its a little buggy, so you have to press enter a few times for the logger to terminate
-            hs["name"] = input("Name: ")
-            hs["score"] = score
+            hs[gameMode]["name"] = input("Name: ")
+            hs[gameMode]["score"] = score
             hs_file_w.write(json.dumps(hs, separators=(',',':')))
             hs_file_w.close()
-        elif hs["score"] == score:
+        elif hs[gameMode]["score"] == score:
             print("lol just one more point and you would have the highscore.")
-            print("The highscore of " + str(hs["score"]) + " belongs to " + hs["name"])
+            print("The highscore of " + str(hs[gameMode]["score"]) + " belongs to " + hs[gameMode]["name"])
         else:
-            print("The highscore of " + str(hs["score"]) + " belongs to " + hs["name"])
+            print("The highscore of " + str(hs[gameMode]["score"]) + " belongs to " + hs[gameMode]["name"])
         break #Better than sys.exit() or using global variable
         
     time.sleep(1/config["fps"]) #Wait before displaying next frame
-

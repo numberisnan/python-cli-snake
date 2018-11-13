@@ -1,6 +1,6 @@
 #Board API
 class Board: #Creates an empty map of pixels; like a canvas
-    def __init__(self,width=20,height=20):
+    def __init__(self,width,height):
         m = [] #Map array
         for i in range(height):
             m.append([])
