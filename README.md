@@ -19,7 +19,7 @@ For the first time you are running the game, run `setup.bat`  by double clicking
 
 ## Requirements
 
-You need Python 3 installed on your machine beforehand. To install: https://www.python.org/
+You need Python 3 installed on your machine beforehand. To install: https://www.python.org/. I also recommend a terminal with UTF-8 suport like VS-Code's terminal, where I took this snip.
 
 <img src="screenshot.png">
 
