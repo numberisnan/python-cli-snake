@@ -10,7 +10,6 @@ except:
     raise Exception("Please run setup to install required modules")
 import time, threading, random, json
 from gameComponents import *
-from pythonToolkit import typeinput, finish
 
 #Settings
 config = {
@@ -27,11 +26,11 @@ keystate = {
     "DOWN": False,
     "LEFT": False,
     "RIGHT": True, #Snake will initailly be going right
-    "ENTER": False,
+    "ENTER": False, #Used for debugging
     "STATE": "RIGHT"
 }
 
-def keydowndetect(): #Fn that updates keystate
+def keydowndetect(): #Thread that updates keystate
     global keystate, terminateKeylogger
     keymapping = { #Maps characters entered to game keystate
         "w": "UP",
@@ -61,36 +60,34 @@ def keydowndetect(): #Fn that updates keystate
 terminateKeylogger = False
 keyloggerThread = threading.Thread(target=keydowndetect)
 keyloggerThread.daemon = True #Make it a daemon thread
-keyloggerThread.start() #Start the keylooger thread
+keyloggerThread.start() #Start the keylogger thread
 
 #Initialise global components
 snake = Snake(keystate["STATE"],3)
-apple = Apple(0,0,0,0).newApple(Board(config["board"]["width"],config["board"]["height"]),snake)
+apple = Apple(0,0,0,0).newApple(Board(config["board"]["width"],config["board"]["height"]), snake)
 score = 0
 
-
-
 #Animation Loop
-def updateScreen(nextFrame=True): #nextFrame is whether to advance to the next frame or not
+def updateScreen(nextFrame=True): #nextFrame is whether to update all components to the next screen  
     global keystate, apple, config, score
-    gameboard = Board(config["board"]["width"],config["board"]["height"]) #Create a new board instance
+    gameboard = Board(config["board"]["width"],config["board"]["height"]) #Create a new board instance; like a blank canvas
 
-    if not apple.eaten:
-        apple.apply(gameboard)
-    else: 
-        score+=1
-        apple = apple.newApple(gameboard, snake)
+    if apple.eaten:
+        score += 1
+        apple = apple.newApple(gameboard, snake) #Apple gets reassigned to a new location
 
-    snake.apply(gameboard, keystate, apple, nextFrame) #Draw the snake on the board 
+    apple.apply(gameboard) #Draw the apple onto the board
+
+    snake.apply(gameboard, keystate, apple, nextFrame) #Draw the snake onto the board 
     
-    print(gameboard.toString(score))
+    print(gameboard.toString(score)) #Print out the board
         
-updateScreen(False)
-time.sleep(2)
+updateScreen(False) #Draw the fisrt frame
+time.sleep(2) #Wait 2 seconds for game to start
 
 while True:
     try:
-        updateScreen()
+        updateScreen() #Will throw an error if game over
     except:
         print('You died. Your score is %i' % score)
         
@@ -101,8 +98,8 @@ while True:
         if (hs["score"] < score):
             hs_file_w = open("hs.json", "w")
             print("You made a highscore!")
-            terminateKeylogger = True
-            input("Press enter to continue")
+            terminateKeylogger = True #Kill the keylogger so you can type your name
+            input("Press enter to continue") #Its a little buggy, so you have to press enter a few times for the logger to terminate
             hs["name"] = input("Name: ")
             hs["score"] = score
             hs_file_w.write(json.dumps(hs, separators=(',',':')))
@@ -113,7 +110,6 @@ while True:
         else:
             print("The highscore of " + str(hs["score"]) + " belongs to " + hs["name"])
         break #Better than sys.exit() or using global variable
-    time.sleep(1/config["fps"])
-
-#finish()
+        
+    time.sleep(1/config["fps"]) #Wait before displaying next frame
 

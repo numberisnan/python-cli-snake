@@ -1,5 +1,5 @@
 #Board API
-class Board: #Creates an empty map of 1/0 pixels
+class Board: #Creates an empty map of pixels; like a canvas
     def __init__(self,width=20,height=20):
         m = [] #Map array
         for i in range(height):
@@ -10,7 +10,7 @@ class Board: #Creates an empty map of 1/0 pixels
         self.width = width
         self.height = height
         self.components = {}
-    def togglePixel(self,x,y,char=1):
+    def togglePixel(self,x,y,char=1): #Turns specified pixel into specified charcode
         "Pixels are zero indexed"
         if x < 0 or y < 0:
             raise IndexError("Out of bounds!")
@@ -19,16 +19,15 @@ class Board: #Creates an empty map of 1/0 pixels
         
         self.board[y][x] = char
     def toString(self, score=0):
-        from random import randint
         "Turns board array into string"
         res = []
         board = self.board
         for row in range(self.height):
             res.append(" ".join(map(str, board[row])))
             res.append("\n")
-        return "\n"+ str(score) + "\n" + "".join(res).replace("0","-").replace("1","🐍").replace("2","🍎")
+        return "\n"+ str(score) + "\n" + "".join(res).replace("0","-").replace("1","🐍").replace("2","🍎") #Swap out charcodes for actual chars
 
-class Component:
+class Component: #A box
     def __init__(self,x=0,y=0,width=1,height=1,char=1):
         self.x = x
         self.y = y
@@ -43,7 +42,7 @@ class Apple(Component):
         import random
         apple = None
         appleCollision = True
-        while appleCollision:
+        while appleCollision: #To make sure an apple does not land on the snake
             appleCollision = False
             apple = Apple(random.randint(0,gameboard.width-1),random.randint(0,gameboard.height-1),1,1,2)
             for i in range(len(snake.body)):
@@ -52,7 +51,7 @@ class Apple(Component):
         return apple
                 
 
-class Snake:
+class Snake: #Container for conponents, with snakelike methods
     def __init__(self,direction,length=3,x=10,y=10):
         body = []
         for i in range(length):
@@ -99,7 +98,7 @@ class Snake:
 
     def addToBody(self,comp):
         self.body.append(comp)
-    def apply(self, board, keystate, apple, moveSnake=True):
+    def apply(self, board, keystate, apple, moveSnake=True): #Draw on board
         d = self.direction
         state = keystate["STATE"]
         
@@ -108,7 +107,7 @@ class Snake:
         else:
             self.direction = state #Sync the snake's direcion with the keystate
 
-        moveSnake and self.move(apple) #Short curcuiting
+        moveSnake and self.move(apple) #Move apple only if specified
 
         for i in range(len(self.body)):
             self.body[i].apply(board)
